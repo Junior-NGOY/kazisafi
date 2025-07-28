@@ -1,6 +1,14 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
+// Importation des images des services
+import cleaningImg from "../../assets/places/cleaning.jpeg";
+import fumigationImg from "../../assets/places/fumigation.jpeg";
+import buanderieImg from "../../assets/places/Buanderie.jpg";
+import piscineImg from "../../assets/places/piscine.jpeg";
+import outsideImg from "../../assets/places/outside.jpeg";
+import waterImg from "../../assets/places/water.jpg";
+
 // Hero Section moderne
 const HeroSection = ({ title, subtitle, backgroundVideo, onCTAClick }) => {
   const navigate = useNavigate();
@@ -75,7 +83,7 @@ const ServicesSection = ({ onServiceQuote, onServiceDetails }) => {
       icon: "🧹",
       title: "Nettoyage Professionnel",
       description: "Service complet pour bureaux, maisons et commerces",
-      image: "/src/assets/places/cleaning.jpeg"
+      image: cleaningImg
     },
     {
       id: "2",
@@ -83,7 +91,7 @@ const ServicesSection = ({ onServiceQuote, onServiceDetails }) => {
       icon: "💨",
       title: "Fumigation",
       description: "Élimination des nuisibles et désinfection",
-      image: "/src/assets/places/fumigation.jpeg"
+      image: fumigationImg
     },
     {
       id: "3",
@@ -91,7 +99,7 @@ const ServicesSection = ({ onServiceQuote, onServiceDetails }) => {
       icon: "👕",
       title: "Buanderie",
       description: "Lavage, séchage et repassage professionnel",
-      image: "/src/assets/places/Buanderie.jpg"
+      image: buanderieImg
     },
     {
       id: "4",
@@ -99,7 +107,7 @@ const ServicesSection = ({ onServiceQuote, onServiceDetails }) => {
       icon: "🏊‍♂️",
       title: "Entretien Piscine",
       description: "Maintenance complète de vos piscines",
-      image: "/src/assets/places/piscine.jpeg"
+      image: piscineImg
     },
     {
       id: "5",
@@ -107,7 +115,7 @@ const ServicesSection = ({ onServiceQuote, onServiceDetails }) => {
       icon: "🌿",
       title: "Jardinage",
       description: "Entretien et aménagement paysager",
-      image: "/src/assets/places/outside.jpeg"
+      image: outsideImg
     },
     {
       id: "6",
@@ -115,7 +123,7 @@ const ServicesSection = ({ onServiceQuote, onServiceDetails }) => {
       icon: "🐛",
       title: "Désinsectisation",
       description: "Traitement écologique contre les insectes",
-      image: "/src/assets/places/water.jpg"
+      image: waterImg
     }
   ];
 

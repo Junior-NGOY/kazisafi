@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
-const API_BASE_URL = 'http://localhost:3001/api';
+// Configuration de l'URL de l'API selon l'environnement
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
 
 // Hook générique pour les appels API
 export const useApi = (endpoint, options = {}) => {
