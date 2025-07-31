@@ -110,7 +110,7 @@ const ResponsiveMenu = ({ showMenu, setShowMenu, navLinks, onQuoteClick, onConta
             📞 +243 811 632 595
           </p>
           <p className="text-sm text-gray-600 mt-1">
-            ✉️ contact@kazisafi.com
+            ✉️ davidshakala@gmail.com
           </p>
           <p className="text-xs text-gray-500 mt-4">
             Développé avec ❤️ par{" "}

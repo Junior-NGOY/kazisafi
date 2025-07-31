@@ -65,6 +65,7 @@ const Navbar = ({ handleOrderPopup, handleContactClick, handleQuoteClick }) => {
   const navLinks = [
     { name: "Accueil", link: "/" },
     { name: "Services", link: "/services" },
+    { name: "Galerie", link: "/gallery" },
     { name: "Projets", link: "/projects" },
     { name: "Blog", link: "/blogs" },
     { name: "À propos", link: "/about" },
@@ -81,7 +82,7 @@ const Navbar = ({ handleOrderPopup, handleContactClick, handleQuoteClick }) => {
               </p>
               <div className="flex items-center space-x-4">
                 <span className="text-sm">📞 +243 811 632 595</span>
-                <span className="text-sm">✉️ contact@kazisafi.com</span>
+                <span className="text-sm">✉️ davidshakala@gmail.com</span>
               </div>
             </div>
           </div>

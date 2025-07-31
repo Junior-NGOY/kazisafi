@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 // Importation des images des services
 import cleaningImg from "../../assets/places/cleaning.jpeg";
 import fumigationImg from "../../assets/places/fumigation.jpeg";
+import fumiImg from "../../assets/places/fumigation.jpg";
 import buanderieImg from "../../assets/places/Buanderie.jpg";
 import piscineImg from "../../assets/places/piscine.jpeg";
 import outsideImg from "../../assets/places/outside.jpeg";
-import waterImg from "../../assets/places/water.jpg";
+
 
 // Hero Section moderne
 const HeroSection = ({ title, subtitle, backgroundVideo, onCTAClick }) => {
@@ -123,7 +124,7 @@ const ServicesSection = ({ onServiceQuote, onServiceDetails }) => {
       icon: "🐛",
       title: "Désinsectisation",
       description: "Traitement écologique contre les insectes",
-      image: waterImg
+      image: fumiImg
     }
   ];
 

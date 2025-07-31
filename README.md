@@ -191,7 +191,7 @@ L'application est entièrement responsive et s'adapte à tous les écrans :
 ## 📞 Contact
 
 **Kazisafi** - Société de Nettoyage Professionnel
-- 📧 Email: contact@kazisafi.com
+- 📧 Email: davidshakala@gmail.com
 - 📱 Téléphone: +243 811 632 595
 - 📍 Adresse: Lubumbashi, République Démocratique du Congo
 

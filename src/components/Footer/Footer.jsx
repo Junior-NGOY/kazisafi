@@ -80,7 +80,7 @@ const ContactInfo = [
   {
     icon: <FaEnvelope className="text-purple-400" />,
     title: "Email",
-    content: "contact@kazisafi.com",
+    content: "davidshakala@gmail.com",
   },
 ];
 

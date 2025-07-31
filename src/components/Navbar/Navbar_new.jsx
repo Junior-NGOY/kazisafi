@@ -73,7 +73,7 @@ const Navbar = ({ handleOrderPopup }) => {
               </p>
               <div className="flex items-center space-x-4">
                 <span className="text-sm">📞 +243 811 632 595</span>
-                <span className="text-sm">✉️ contact@kazisafi.com</span>
+                <span className="text-sm">✉️ davidshakala@gmail.com</span>
               </div>
             </div>
           </div>

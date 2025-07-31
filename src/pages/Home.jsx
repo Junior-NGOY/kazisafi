@@ -10,7 +10,7 @@ import OrderPopup from "../components/OrderPopup/OrderPopup";
 import QuoteModal from "../components/QuoteModal";
 import ServiceModal from "../components/ServiceModal";
 import ContactModal from "../components/ContactModal";
-import { useSettings } from "../hooks/useApi";
+// import { useSettings } from "../hooks/useApi";
 
 const Home = () => {
   const [orderPopup, setOrderPopup] = React.useState(false);
@@ -18,7 +18,7 @@ const Home = () => {
   const [contactModal, setContactModal] = React.useState(false);
   const [serviceModal, setServiceModal] = React.useState(false);
   const [selectedService, setSelectedService] = React.useState(null);
-  const { getSetting } = useSettings();
+  // const { getSetting, loading, error } = useSettings();
 
   const handleServiceDetails = (service) => {
     setSelectedService(service);
@@ -49,9 +49,9 @@ const Home = () => {
       <div>
         {/* Hero Section Moderne */}
         <HeroSection
-          title={getSetting('hero_title') || "KAZISAFI - Excellence en Nettoyage"}
-          subtitle={getSetting('hero_subtitle') || "Services professionnels de qualité pour tous vos besoins"}
-          backgroundVideo={getSetting('hero_video') || NatureVid}
+          title="KAZISAFI - Excellence en Nettoyage"
+          subtitle="Services professionnels de qualité pour tous vos besoins"
+          backgroundVideo={NatureVid}
           onCTAClick={handleQuoteClick}
         />
 

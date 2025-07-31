@@ -9,6 +9,7 @@ import ServicesPage from "./pages/ServicesPage";
 import About from "./pages/About";
 import BlogsDetails from "./pages/BlogsDetails";
 import ServiceDetail from "./pages/ServiceDetail";
+import Gallery from "./pages/Gallery";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -33,6 +34,7 @@ const App = () => {
             <Route path="blogs/:id" element={<BlogsDetails />} />
             <Route path="services" element={<ServicesPage />} />
             <Route path="services/:serviceName" element={<ServiceDetail />} />
+            <Route path="gallery" element={<Gallery />} />
             <Route path="about" element={<About />} />
             <Route path="*" element={<NoPage />} />
           </Route>

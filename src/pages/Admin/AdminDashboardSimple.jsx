@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -12,35 +12,32 @@ const useApiData = () => {
   const [loading, setLoading] = useState({});
   const [error, setError] = useState(null);
 
-  const fetchData = async (endpoint, key) => {
+  const fetchData = useCallback(async (endpoint, key) => {
     setLoading(prev => ({ ...prev, [key]: true }));
     setError(null);
     
     try {
-      console.log(`Tentative de chargement: ${API_BASE_URL}${endpoint}`);
+      console.log(`Fetching data for ${key} from ${API_BASE_URL}${endpoint}`);
       const response = await fetch(`${API_BASE_URL}${endpoint}`);
       
       if (!response.ok) {
-        console.warn(`API indisponible pour ${key}: ${response.status}`);
-        // Initialiser avec tableau vide plutôt que d'échouer
-        setData(prev => ({ ...prev, [key]: [] }));
-        return [];
+        throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
       }
       
       const result = await response.json();
-      console.log(`Données chargées pour ${key}:`, result);
+      console.log(`Successfully loaded ${key}:`, result);
       setData(prev => ({ ...prev, [key]: result }));
       return result;
     } catch (err) {
-      console.warn(`Erreur lors du chargement de ${key}:`, err.message);
-      // En cas d'erreur, initialiser avec un tableau vide
+      console.error(`Error fetching ${key}:`, err);
+      setError(`Erreur lors du chargement des ${key}: ${err.message}`);
+      // Initialiser avec un tableau vide plutôt que de ne rien faire
       setData(prev => ({ ...prev, [key]: [] }));
-      // Ne pas définir d'erreur pour éviter de casser l'interface
       return [];
     } finally {
       setLoading(prev => ({ ...prev, [key]: false }));
     }
-  };
+  }, []);
 
   return { data, loading, error, fetchData };
 };
@@ -57,39 +54,26 @@ const getImageUrl = (imagePath) => {
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('services');
   const { data, loading, error, fetchData } = useApiData();
-  const [dataLoaded, setDataLoaded] = useState({});
 
   // Charger les données quand l'onglet change
   useEffect(() => {
     const loadData = async () => {
-      const tabKey = activeTab === 'blog' ? 'posts' : activeTab;
-      
-      // Éviter les chargements multiples
-      if (dataLoaded[tabKey] || loading[tabKey]) {
-        return;
-      }
-
       try {
         switch (activeTab) {
           case 'services':
             await fetchData('/services', 'services');
-            setDataLoaded(prev => ({ ...prev, services: true }));
             break;
           case 'projects':
             await fetchData('/projects', 'projects');
-            setDataLoaded(prev => ({ ...prev, projects: true }));
             break;
           case 'blog':
             await fetchData('/blog', 'posts');
-            setDataLoaded(prev => ({ ...prev, posts: true }));
             break;
           case 'quotes':
             await fetchData('/quotes', 'quotes');
-            setDataLoaded(prev => ({ ...prev, quotes: true }));
             break;
-          case 'gallery':
-            await fetchData('/gallery', 'gallery');
-            setDataLoaded(prev => ({ ...prev, gallery: true }));
+          case 'settings':
+            // Les paramètres n'ont pas besoin de chargement de données
             break;
           default:
             break;
@@ -99,18 +83,17 @@ const AdminDashboard = () => {
       }
     };
 
-    if (activeTab !== 'settings') {
+    // Charger les données seulement pour les onglets qui en ont besoin
+    if (['services', 'projects', 'blog', 'quotes'].includes(activeTab)) {
       loadData();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab]); // Seul activeTab comme dépendance
+  }, [activeTab, fetchData]); // Ajouter fetchData à la dépendance
 
   const tabs = [
     { id: 'services', label: 'Services', icon: '🛠️' },
     { id: 'projects', label: 'Projets', icon: '📋' },
     { id: 'blog', label: 'Blog', icon: '📝' },
     { id: 'quotes', label: 'Devis', icon: '💬' },
-    { id: 'gallery', label: 'Galerie', icon: '🖼️' },
     { id: 'settings', label: 'Paramètres', icon: '⚙️' }
   ];
 
@@ -169,7 +152,6 @@ const AdminDashboard = () => {
                 <p className="mt-1 text-sm text-red-700">{error}</p>
                 <button 
                   onClick={() => {
-                    setDataLoaded(prev => ({ ...prev, [activeTab === 'blog' ? 'posts' : activeTab]: false }));
                     const loadData = async () => {
                       switch (activeTab) {
                         case 'services':
@@ -183,9 +165,6 @@ const AdminDashboard = () => {
                           break;
                         case 'quotes':
                           await fetchData('/quotes', 'quotes');
-                          break;
-                        case 'gallery':
-                          await fetchData('/gallery', 'gallery');
                           break;
                       }
                     };
@@ -224,10 +203,6 @@ const AdminDashboard = () => {
 
             {activeTab === 'quotes' && (
               <QuotesManager quotes={data.quotes || []} />
-            )}
-
-            {activeTab === 'gallery' && (
-              <GalleryManager gallery={data.gallery || []} />
             )}
 
             {activeTab === 'settings' && (
@@ -484,247 +459,6 @@ const QuotesManager = ({ quotes }) => {
 
 QuotesManager.propTypes = {
   quotes: PropTypes.array.isRequired
-};
-
-// Gestionnaire de la galerie avec VOS services corrects
-const GalleryManager = ({ gallery }) => {
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [showAddModal, setShowAddModal] = useState(false);
-
-  // Catégories basées sur VOS services
-  const categories = [
-    { id: 'all', name: 'Toutes les images', icon: '🖼️' },
-    { id: 'nettoyage', name: 'Nettoyage', icon: '🧽' },
-    { id: 'fumigation', name: 'Fumigation', icon: '💨' },
-    { id: 'buanderie', name: 'Buanderie', icon: '👕' },
-    { id: 'evacuation', name: 'Évacuation d\'immondices', icon: '🗑️' },
-    { id: 'piscine', name: 'Entretien piscine', icon: '🏊' },
-    { id: 'jardinage', name: 'Jardinage', icon: '🌱' },
-    { id: 'desinsectisation', name: 'Désinsectisation à l\'eau', icon: '🚿' }
-  ];
-
-  // Filtrer les images selon la catégorie sélectionnée
-  const filteredGallery = selectedCategory === 'all' 
-    ? gallery 
-    : gallery.filter(item => item.category === selectedCategory);
-
-  return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Galerie Kazisafi
-        </h2>
-        <p className="text-gray-600">
-          Gérez vos photos par service pour montrer votre expertise
-        </p>
-      </div>
-
-      {/* Filtres par catégorie */}
-      <div className="mb-6">
-        <div className="flex flex-wrap gap-2">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                selectedCategory === category.id
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              <span>{category.icon}</span>
-              <span>{category.name}</span>
-              <span className="bg-white bg-opacity-20 text-xs px-2 py-1 rounded-full">
-                {category.id === 'all' 
-                  ? gallery.length 
-                  : gallery.filter(item => item.category === category.id).length
-                }
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Actions rapides */}
-      <div className="mb-6 flex justify-between items-center">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900">
-            {selectedCategory === 'all' 
-              ? `Toutes les images (${gallery.length})` 
-              : `${categories.find(c => c.id === selectedCategory)?.name} (${filteredGallery.length})`
-            }
-          </h3>
-          <p className="text-gray-600 text-sm">
-            Organisez vos images par type de service
-          </p>
-        </div>
-        <div className="space-x-3">
-          <button 
-            onClick={() => setShowAddModal(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors flex items-center space-x-2"
-          >
-            <span>📷</span>
-            <span>Ajouter des images</span>
-          </button>
-          <button className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md transition-colors flex items-center space-x-2">
-            <span>📁</span>
-            <span>Organiser</span>
-          </button>
-        </div>
-      </div>
-
-      {filteredGallery.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <div className="text-4xl mb-4">
-            {selectedCategory === 'all' ? '🖼️' : categories.find(c => c.id === selectedCategory)?.icon}
-          </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            {selectedCategory === 'all' 
-              ? 'Aucune image dans la galerie'
-              : `Aucune image pour ${categories.find(c => c.id === selectedCategory)?.name}`
-            }
-          </h3>
-          <p className="text-gray-600 mb-4">
-            {selectedCategory === 'all'
-              ? 'Ajoutez vos premières images pour créer une belle galerie'
-              : `Ajoutez des images pour montrer vos réalisations en ${categories.find(c => c.id === selectedCategory)?.name.toLowerCase()}`
-            }
-          </p>
-          <button 
-            onClick={() => setShowAddModal(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
-          >
-            Ajouter des images
-          </button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {filteredGallery.map((item, index) => (
-            <div key={item.id || index} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden group hover:shadow-lg transition-all duration-200">
-              <div className="aspect-square relative">
-                <img
-                  src={getImageUrl(item.image || item.url)}
-                  alt={item.title || item.alt || `Image ${index + 1}`}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.src = '/placeholder-service.svg';
-                  }}
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-200 flex items-center justify-center">
-                  <div className="transform scale-0 group-hover:scale-100 transition-transform duration-200 space-x-2">
-                    <button className="bg-white text-gray-800 px-3 py-1 rounded-md text-sm hover:bg-gray-100 transition-colors">
-                      👁️ Voir
-                    </button>
-                    <button className="bg-blue-600 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-700 transition-colors">
-                      ✏️ Modifier
-                    </button>
-                    <button className="bg-red-600 text-white px-3 py-1 rounded-md text-sm hover:bg-red-700 transition-colors">
-                      🗑️ Supprimer
-                    </button>
-                  </div>
-                </div>
-                
-                {/* Badge de catégorie */}
-                {item.category && item.category !== 'all' && (
-                  <div className="absolute top-2 left-2">
-                    <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full flex items-center space-x-1">
-                      <span>{categories.find(c => c.id === item.category)?.icon}</span>
-                      <span>{categories.find(c => c.id === item.category)?.name}</span>
-                    </span>
-                  </div>
-                )}
-
-                {/* Badge type (avant/après) */}
-                {item.type && (
-                  <div className="absolute top-2 right-2">
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      item.type === 'avant' 
-                        ? 'bg-red-100 text-red-800' 
-                        : item.type === 'apres'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      {item.type === 'avant' ? '📋 Avant' : item.type === 'apres' ? '✨ Après' : item.type}
-                    </span>
-                  </div>
-                )}
-              </div>
-              
-              {(item.title || item.description) && (
-                <div className="p-3">
-                  {item.title && (
-                    <h3 className="text-sm font-semibold text-gray-900 mb-1 truncate">
-                      {item.title}
-                    </h3>
-                  )}
-                  {item.description && (
-                    <p className="text-xs text-gray-600 line-clamp-2 mb-2">
-                      {item.description}
-                    </p>
-                  )}
-                  
-                  {/* Informations supplémentaires */}
-                  <div className="flex items-center justify-between text-xs text-gray-500">
-                    <span>{new Date(item.createdAt || Date.now()).toLocaleDateString('fr-FR')}</span>
-                    {item.featured && (
-                      <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
-                        ⭐ Mise en avant
-                      </span>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Statistiques */}
-      {gallery.length > 0 && (
-        <div className="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4">📊 Statistiques de la galerie</h4>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {categories.slice(1).map((category) => {
-              const count = gallery.filter(item => item.category === category.id).length;
-              return (
-                <div key={category.id} className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl mb-1">{category.icon}</div>
-                  <div className="text-lg font-bold text-gray-900">{count}</div>
-                  <div className="text-xs text-gray-600">{category.name}</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Modal d'ajout (placeholder) */}
-      {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Ajouter des images à la galerie
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Fonctionnalité en développement. Bientôt vous pourrez ajouter des images directement ici.
-            </p>
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={() => setShowAddModal(false)}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md transition-colors"
-              >
-                Fermer
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-GalleryManager.propTypes = {
-  gallery: PropTypes.array.isRequired
 };
 
 // Gestionnaire des paramètres

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import { useServices } from '../hooks/useApi';
 import { useSearchParams } from 'react-router-dom';
 import ServiceModal from '../components/ServiceModal';
@@ -12,16 +12,20 @@ const ServicesPage = () => {
   const [quoteModal, setQuoteModal] = useState(false);
   const [searchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Récupérer la catégorie depuis l'URL
   const categoryFromUrl = searchParams.get('category');
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (categoryFromUrl) {
+    if (categoryFromUrl && !isInitialized) {
       setSelectedCategory(categoryFromUrl);
+      setIsInitialized(true);
+    } else if (!categoryFromUrl && !isInitialized) {
+      setIsInitialized(true);
     }
-  }, [categoryFromUrl]);
+  }, [categoryFromUrl, isInitialized]);
 
   const handleServiceDetails = (service) => {
     setSelectedService(service);
@@ -39,11 +43,13 @@ const ServicesPage = () => {
     setQuoteModal(true);
   };
 
-  // Filtrer les services actifs et par catégorie
-  const activeServices = services?.filter(service => service.active) || [];
+  // Filtrer les services actifs et par catégorie avec useMemo pour éviter les recalculs
+  const activeServices = useMemo(() => {
+    return services?.filter(service => service.active) || [];
+  }, [services]);
   
   // Catégories disponibles
-  const categories = [
+  const categories = useMemo(() => [
     { id: 'all', name: 'Tous les services', icon: '🏠' },
     { id: 'nettoyage', name: 'Nettoyage', icon: '🧹' },
     { id: 'fumigation', name: 'Fumigation', icon: '💨' },
@@ -53,18 +59,23 @@ const ServicesPage = () => {
     { id: 'evacuation', name: 'Évacuation d\'immondices', icon: '🗑️' },
     { id: 'desinsectisation', name: 'Désinsectisation', icon: '🐛' },
     { id: 'debouchage', name: 'Débouchage', icon: '🔧' }
-  ];
+  ], []);
 
-  // Filtrer les services selon la catégorie sélectionnée
-  const filteredServices = selectedCategory === 'all' 
-    ? activeServices 
-    : activeServices.filter(service => 
-        service.category === selectedCategory || 
-        service.name?.toLowerCase().includes(selectedCategory.toLowerCase()) ||
-        service.title?.toLowerCase().includes(selectedCategory.toLowerCase())
-      );
+  // Filtrer les services selon la catégorie sélectionnée avec useMemo
+  const filteredServices = useMemo(() => {
+    if (selectedCategory === 'all') {
+      return activeServices;
+    }
+    return activeServices.filter(service => 
+      service.category === selectedCategory || 
+      service.name?.toLowerCase().includes(selectedCategory.toLowerCase()) ||
+      service.title?.toLowerCase().includes(selectedCategory.toLowerCase())
+    );
+  }, [activeServices, selectedCategory]);
 
   const handleCategoryChange = (categoryId) => {
+    if (categoryId === selectedCategory) return; // Éviter les changements inutiles
+    
     setSelectedCategory(categoryId);
     // Mettre à jour l'URL
     const url = new URL(window.location);
@@ -218,8 +229,8 @@ const ServicesPage = () => {
   );
 };
 
-// Composant ServiceCard
-const ServiceCard = ({ service, index, onViewDetails, onRequestQuote }) => {
+// Composant ServiceCard mémorisé pour éviter les re-rendus inutiles
+const ServiceCard = memo(({ service, index, onViewDetails, onRequestQuote }) => {
   return (
     <div 
       className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
@@ -270,7 +281,9 @@ const ServiceCard = ({ service, index, onViewDetails, onRequestQuote }) => {
       </div>
     </div>
   );
-};
+});
+
+ServiceCard.displayName = 'ServiceCard';
 
 ServiceCard.propTypes = {
   service: PropTypes.shape({
