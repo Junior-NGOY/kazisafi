@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 // Importation des images des services
 import cleaningImg from "../../assets/places/cleaning.jpeg";
-import fumigationImg from "../../assets/places/fumigation.jpeg";
+import fumigationImg from "../../assets/places/fumigation1.jpg";
 import fumiImg from "../../assets/places/fumigation.jpg";
 import buanderieImg from "../../assets/places/Buanderie.jpg";
 import piscineImg from "../../assets/places/piscine.jpeg";
-import outsideImg from "../../assets/places/outside.jpeg";
+import jardinageImg from "../../assets/places/jardinage1.jpg";
 
 
 // Hero Section moderne
@@ -92,7 +92,7 @@ const ServicesSection = ({ onServiceQuote, onServiceDetails }) => {
       icon: "💨",
       title: "Fumigation",
       description: "Élimination des nuisibles et désinfection",
-      image: fumigationImg
+      image: fumiImg
     },
     {
       id: "3",
@@ -116,7 +116,7 @@ const ServicesSection = ({ onServiceQuote, onServiceDetails }) => {
       icon: "🌿",
       title: "Jardinage",
       description: "Entretien et aménagement paysager",
-      image: outsideImg
+      image: jardinageImg
     },
     {
       id: "6",
@@ -124,7 +124,7 @@ const ServicesSection = ({ onServiceQuote, onServiceDetails }) => {
       icon: "🐛",
       title: "Désinsectisation",
       description: "Traitement écologique contre les insectes",
-      image: fumiImg
+      image: fumigationImg
     }
   ];
 
