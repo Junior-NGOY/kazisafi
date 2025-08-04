@@ -8,7 +8,8 @@ import fumiImg from "../../assets/places/fumigation.jpg";
 import buanderieImg from "../../assets/places/Buanderie.jpg";
 import piscineImg from "../../assets/places/piscine.jpeg";
 import jardinageImg from "../../assets/places/jardinage1.jpg";
-
+//import evacuationImg from "../../assets/places/cleaning.jpeg"; // Temporaire, à remplacer par une vraie image d'évacuation
+import evacuationImg from "../../assets/places/image.png"; // Image générique pour les services
 
 // Hero Section moderne
 const HeroSection = ({ title, subtitle, backgroundVideo, onCTAClick }) => {
@@ -120,6 +121,14 @@ const ServicesSection = ({ onServiceQuote, onServiceDetails }) => {
     },
     {
       id: "6",
+      slug: "evacuation-immondices",
+      icon: "🗑️",
+      title: "Évacuation d'Immondices",
+      description: "Service d'évacuation rapide et efficace des déchets",
+      image: evacuationImg
+    },
+    {
+      id: "7",
       slug: "desinsectisation",
       icon: "🐛",
       title: "Désinsectisation",
