@@ -3,8 +3,8 @@ import Slider from "react-slick";
 import client from "../../assets/temoignages/the farmas market.png";
 import client2 from "../../assets/temoignages/Sparkle laudry matt.png";
 import client5 from "../../assets/temoignages/Beplia Salon.png";
-import steakHouseLogo from "../../assets/temoignages/LOGO STEAK HOUSE.png";
-
+//import steakHouseLogo from "../../assets/temoignages/LOGO STEAK HOUSE.png";
+import steakHouseLogo from "../../assets/temoignages/LOGO STEAK HOUSE.PNG";
 const testimonialData = [
   {
     id: 1,
