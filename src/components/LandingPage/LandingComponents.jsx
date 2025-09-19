@@ -10,7 +10,8 @@ import piscineImg from "../../assets/places/piscine.jpeg";
 import jardinageImg from "../../assets/places/jardinage1.jpg";
 //import evacuationImg from "../../assets/places/cleaning.jpeg"; // Temporaire, à remplacer par une vraie image d'évacuation
 import evacuationImg from "../../assets/places/image.png"; // Image générique pour les services
-
+import electriciteImg from "../../assets/places/electricite.jpg"; // À remplacer par votre vraie image d'électricité
+import climatisationImg from "../../assets/places/climatisation.jpg"; // À remplacer par votre vraie image de climatisation
 // Hero Section moderne
 const HeroSection = ({ title, subtitle, backgroundVideo, onCTAClick }) => {
   const navigate = useNavigate();
@@ -134,6 +135,22 @@ const ServicesSection = ({ onServiceQuote, onServiceDetails }) => {
       title: "Désinsectisation",
       description: "Traitement écologique contre les insectes",
       image: fumigationImg
+    },
+    {
+      id: "8",
+      slug: "electricite",
+      icon: "⚡",
+      title: "Électricité",
+      description: "Installation et maintenance électrique professionnelle",
+      image: electriciteImg
+    },
+    {
+      id: "9",
+      slug: "climatisation",
+      icon: "❄️",
+      title: "Climatisation",
+      description: "Installation et entretien de systèmes de climatisation",
+      image: climatisationImg
     }
   ];
 

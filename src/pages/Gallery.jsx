@@ -11,6 +11,9 @@ import jardinage1 from '../assets/galleries/jardinage1.jpg';
 import buanderie from '../assets/galleries/buanderie.jpg';
 import piscine from '../assets/galleries/piscine.jpg';
 import eau from '../assets/galleries/eau.jpg';
+import climatisationImg from '../assets/galleries/climatisation.jpg';
+import electriciteImg from '../assets/galleries/electricite.jpg';
+import evacuationImg from '../assets/galleries/image.png';
 
 // Données statiques de la galerie avec images depuis les assets
 const galleryData = [
@@ -128,12 +131,33 @@ const galleryData = [
     id: '10',
     title: "Évacuation d'immondices",
     description: "Service d'évacuation rapide et efficace des déchets",
-    image: '/placeholder-service.svg',
+    image: evacuationImg,
     category: "evacuation",
     type: "general",
     alt: "Évacuation déchets",
     featured: false,
     active: true
+  },
+  {
+    id: '11',
+    title: "climatisation",
+    description: "Installation et maintenance de systèmes de climatisation",
+    image: climatisationImg,
+    category: "climatisation",
+    type: "general",
+    alt: "Entretien climatisation",
+    featured: false,
+    active: true
+  },
+  {id: '12',
+  title:"électricité",
+  description: "Installation et maintenance de systèmes électriques",
+  image: electriciteImg,
+  category: "electricite",
+  type: "general",
+  alt: "Entretien électricité",
+  featured: false,
+  active: true,
   },
 
   // DESINSECTISATION
@@ -187,8 +211,9 @@ const Gallery = () => {
     { id: 'buanderie', name: 'Buanderie', icon: '👕' },
     { id: 'evacuation', name: 'Évacuation d\'immondices', icon: '�️' },
     { id: 'piscine', name: 'Entretien piscine', icon: '🏊' },
-    { id: 'jardinage', name: 'Jardinage', icon: '�' },
-    { id: 'desinsectisation', name: 'Désinsectisation à l\'eau', icon: '🚿' }
+    { id: 'jardinage', name: 'Jardinage', icon: '🌳' },
+    { id: 'climatisation', name: 'Climatisation', icon: '❄️' },
+    { id: 'electricite', name: 'Électricité', icon: '⚡' },
   ];
 
   // Filtrer les images par catégorie

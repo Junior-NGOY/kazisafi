@@ -64,6 +64,18 @@ const ServiceLinks = [
     title: "Jardinage & Espaces Verts",
     link: "/services?category=jardinage",
   },
+    {
+    title: "Evacuation d'immondices",
+    link: "/services?category=evacuation-immondices",
+  },
+  {
+    title: "Climatisation",
+    link: "/services?category=climatisation",
+  },
+  {
+    title: "Electricité",
+    link: "/services?category=electricite",
+  },
 ];
 
 const ContactInfo = [

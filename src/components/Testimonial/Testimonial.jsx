@@ -1,5 +1,4 @@
 
-//import React from "react";
 import Slider from "react-slick";
 import client from "../../assets/temoignages/the farmas market.png";
 import client2 from "../../assets/temoignages/Sparkle laudry matt.png";
